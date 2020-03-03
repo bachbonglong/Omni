@@ -108,15 +108,41 @@ class _LoginPageState extends State<LoginPage> {
         FirebaseUser user = result.user;
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home(user: user)));
-      } catch (e) {
+      } 
+      catch (e) {
         print(e.message);
         _formKey.currentState.reset();
+        showAlertDialog(context, e.message);
       }
-    }
 
-    // Find the Scaffold in the widget tree and use
-    // it to show a SnackBar.
+    }
   }
+  
+
+  showAlertDialog(BuildContext context,String e) {
+  // set up the button
+  Widget okButton = FlatButton(
+    child: Text("OK"),
+    onPressed: () { },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(e),
+    content: Text("This is my message."),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
   String validateEmail(String input) {
     Pattern pattern =
