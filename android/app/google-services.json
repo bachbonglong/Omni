@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "162350727979",
+    "firebase_url": "https://duancntt2-3d4e0.firebaseio.com",
+    "project_id": "duancntt2-3d4e0",
+    "storage_bucket": "duancntt2-3d4e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162350727979:android:b85eaa6d5943b8f84f3b6e",
+        "android_client_info": {
+          "package_name": "com.example.duan_cntt2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162350727979-go3e9uepp37fq2io90l37rab1idpbv8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFQCrCZOXC_FAFeLYlCib-c9_UaWo2gX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "162350727979-go3e9uepp37fq2io90l37rab1idpbv8f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
