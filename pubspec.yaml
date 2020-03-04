@@ -38,6 +38,10 @@ dev_dependencies:
   cloud_firestore: 0.13.4       #Firebase cloud
   url_launcher: ^3.0.3          #Launcher URL
   flutter_auth_buttons: ^0.6.0  #Flutter Auth Buttons
+  splashscreen:                 #Flutter SplashScreen
+
+  # shared_preferences: ^0.5.3+4
+  # firebase_database: 3.0.7
 
 flutter:
 
