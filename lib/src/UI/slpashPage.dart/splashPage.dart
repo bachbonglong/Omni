@@ -1,6 +1,8 @@
-import 'package:duan_cntt2/src/UI/login/setup/login.dart';
+import 'package:duan_cntt2/src/UI/homePage/home.dart';
+import 'package:duan_cntt2/src/UI/login/login.dart';
 import 'package:flutter/material.dart'; 
 import 'package:splashscreen/splashscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -31,12 +33,19 @@ class _SplashPageState extends State<SplashPage> {
 
 class AfterSplash extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Center(
-        child: Login(),
-      ),
-    );
-  }
+  Widget build(BuildContext context){
+        return FutureBuilder<FirebaseUser>(
+            future: FirebaseAuth.instance.currentUser(),
+            builder: (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot){
+                       if (snapshot.hasData){
+                           FirebaseUser user = snapshot.data; // this is your user instance
+                           /// is because there is user already logged
+                           return Home();
+                        }
+                         /// other way there is no user logged.
+                         return Login();
+             }
+          );
+    }
 }
  

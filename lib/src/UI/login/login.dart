@@ -1,17 +1,20 @@
+// import 'package:duan_cntt2/src/constants/constants.dart';
+import 'package:duan_cntt2/src/UI/homePage/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:duan_cntt2/src/UI/login/home.dart';
 import 'package:flutter/material.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
-class LoginPage extends StatefulWidget {
+class Login extends StatefulWidget {
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginState createState() => new _LoginState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _validate = false;
   String _email, _password;
+  bool _obscureText = true;
+  bool _buttonChange = true;
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -21,12 +24,27 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
+  /* void hide-show Passowrd */
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+      
+    });
+  }
+
+  void _buttonLog() {
+    setState(() {
+      _buttonChange = !_buttonChange;
+      _formKey.currentState.reset();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Form Validation'),
+        appBar: AppBar(
+          title: _buttonChange ? Text("Đăng kí "):Text("Đăng Nhập"),
         ),
         body: new SingleChildScrollView(
           child: new Container(
@@ -81,8 +99,15 @@ class _LoginPageState extends State<LoginPage> {
                   icon: new Icon(
                     Icons.lock,
                     color: Colors.grey,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                    onPressed: _toggle,
                   )),
-              obscureText: true,
+              obscureText: _obscureText,
               keyboardType: TextInputType.emailAddress,
               validator: validatePassword,
               autofocus: false,
@@ -91,14 +116,33 @@ class _LoginPageState extends State<LoginPage> {
               }),
         ),
         new SizedBox(height: 15.0),
-        new RaisedButton(
-          onPressed: signIn,
-          child: new Text('Đăng Nhập'),
-        ),
+        _buttonChange
+            ? new RaisedButton(
+                onPressed: signIn,
+                child: new Text('Đăng Kí'),
+              )
+            : new RaisedButton(
+                onPressed: signUp,
+                child: new Text('Đăng Nhập'),
+              ),
+        _buttonChange
+            ? Container(
+                padding: EdgeInsets.only(top: 10),
+                child: new InkWell(
+                  child: Text("Bạn đã có tài khoản rồi , đăng nhập ngay !!"),
+                  onTap: _buttonLog,
+                ))
+            : Container(
+                padding: EdgeInsets.only(top: 10),
+                child: new InkWell(
+                    child: Text("Bạn chưa có tài khoản , đăng kí ngay !!"),
+                    onTap: _buttonLog),
+              ),
       ],
     );
   }
 
+/* Sign In and ShowAler */
   void signIn() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -108,41 +152,80 @@ class _LoginPageState extends State<LoginPage> {
         FirebaseUser user = result.user;
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Home(user: user)));
-      } 
-      catch (e) {
+      } catch (e) {
         print(e.message);
-        _formKey.currentState.reset();
-        showAlertDialog(context, e.message);
+        showAlertDialogSignIn(context, e.message);
       }
-
     }
   }
-  
 
-  showAlertDialog(BuildContext context,String e) {
-  // set up the button
-  Widget okButton = FlatButton(
-    child: Text("OK"),
-    onPressed: () { },
-  );
+  showAlertDialogSignIn(BuildContext context, String e) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Thông Báo !"),
+      content: Text("Kiểm tra lại tài khoản hoặc mật khẩu"),
+      actions: [
+        okButton,
+      ],
+    );
 
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text(e),
-    content: Text("This is my message."),
-    actions: [
-      okButton,
-    ],
-  );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
+/* Sign Up and ShowAler */
+
+  void signUp() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      try {
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => SignIn()));
+      } catch (e) {
+        print(e.message);
+      }
+    }
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Thông Báo !"),
+      content: Text("Kiểm tra lại tài khoản hoặc mật khẩu"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   String validateEmail(String input) {
     Pattern pattern =
