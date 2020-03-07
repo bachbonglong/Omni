@@ -36,7 +36,7 @@ dev_dependencies:
   font_awesome_flutter: ^8.0.1  #Font logo 
   firebase_auth: ^0.15.5+2      #Auth firebase
   cloud_firestore: 0.13.4       #Firebase cloud
-  url_launcher: ^3.0.3          #Launcher URL
+  # url_launcher: ^3.0.3          #Launcher URL
   flutter_auth_buttons: ^0.6.0  #Flutter Auth Buttons
   splashscreen:                 #Flutter SplashScreen
 
