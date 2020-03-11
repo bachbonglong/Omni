@@ -10,11 +10,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _validate = false;
-  String _email, _password;
-  bool _obscureText = true;
   bool _buttonChange = true;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _obscureText = true;
+  String _email, _password;
+  bool _validate = false;
+
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -35,29 +36,13 @@ class _LoginState extends State<Login> {
     setState(() {
       _buttonChange = !_buttonChange;
       _formKey.currentState.reset();
-      Navigator.of(context).pop();
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: new Scaffold(
-        appBar: AppBar(
-          title: _buttonChange ? Text("Đăng kí") : Text("Đăng Nhập"),
-        ),
-        body: new SingleChildScrollView(
-          child: new Container(
-            margin: new EdgeInsets.all(15.0),
-            child: new Form(
-              key: _formKey,
-              autovalidate: _validate,
-              child: formui(),
-            ),
-          ),
-        ),
-      ),
-    );
+  void _hide() {
+    setState(() {
+      Navigator.of(context).pop();
+    });
   }
 
   Widget formui() {
@@ -175,6 +160,7 @@ class _LoginState extends State<Login> {
 
   showAlertDialogSignUp(BuildContext context, String e) {
     // set up the button
+
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
@@ -182,9 +168,11 @@ class _LoginState extends State<Login> {
       },
     );
     Widget signin = FlatButton(
-      child: Text("Đăng Nhập"),
-      onPressed: _buttonLog
-    );
+        child: Text("Đăng Nhập"),
+        onPressed: () {
+          _buttonLog();
+          _hide();
+        });
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Thông Báo !"),
@@ -207,7 +195,7 @@ class _LoginState extends State<Login> {
   showAlertDialogSignIn(BuildContext context, String e) {
     // set up the button
     Widget okButton = FlatButton(
-      child: Text("OK"),
+      child: Text("Đóng!"),
       onPressed: () {
         Navigator.of(context).pop();
       },
@@ -230,8 +218,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-/* Sign Up and ShowAler */
-
   String validateEmail(String input) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -251,5 +237,28 @@ class _LoginState extends State<Login> {
       return "Password phải bắt đầu chữ in hoa , và phải có ít nhất 1 chữ số ";
     }
     return null;
+  }
+
+/* Sign Up and ShowAler */
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: new Scaffold(
+        appBar: AppBar(
+          title: _buttonChange ? Text("Đăng kí") : Text("Đăng Nhập"),
+        ),
+        body: new SingleChildScrollView(
+          child: new Container(
+            margin: new EdgeInsets.all(15.0),
+            child: new Form(
+              key: _formKey,
+              autovalidate: _validate,
+              child: formui(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
