@@ -28,7 +28,6 @@ class _LoginState extends State<Login> {
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
-      
     });
   }
 
@@ -36,6 +35,7 @@ class _LoginState extends State<Login> {
     setState(() {
       _buttonChange = !_buttonChange;
       _formKey.currentState.reset();
+      Navigator.of(context).pop();
     });
   }
 
@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
     return MaterialApp(
       home: new Scaffold(
         appBar: AppBar(
-          title: _buttonChange ? Text("Đăng kí "):Text("Đăng Nhập"),
+          title: _buttonChange ? Text("Đăng kí") : Text("Đăng Nhập"),
         ),
         body: new SingleChildScrollView(
           child: new Container(
@@ -118,11 +118,11 @@ class _LoginState extends State<Login> {
         new SizedBox(height: 15.0),
         _buttonChange
             ? new RaisedButton(
-                onPressed: signIn,
+                onPressed: signUp,
                 child: new Text('Đăng Kí'),
               )
             : new RaisedButton(
-                onPressed: signUp,
+                onPressed: signIn,
                 child: new Text('Đăng Nhập'),
               ),
         _buttonChange
@@ -131,13 +131,14 @@ class _LoginState extends State<Login> {
                 child: new InkWell(
                   child: Text("Bạn đã có tài khoản rồi , đăng nhập ngay !!"),
                   onTap: _buttonLog,
-                ))
+                ),
+              )
             : Container(
                 padding: EdgeInsets.only(top: 10),
                 child: new InkWell(
                     child: Text("Bạn chưa có tài khoản , đăng kí ngay !!"),
                     onTap: _buttonLog),
-              ),
+              )
       ],
     );
   }
@@ -157,6 +158,50 @@ class _LoginState extends State<Login> {
         showAlertDialogSignIn(context, e.message);
       }
     }
+  }
+
+  void signUp() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      try {
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: _email, password: _password);
+        showAlertDialogSignUp(context, 'e.mesage');
+      } catch (e) {
+        print(e.message);
+      }
+    }
+  }
+
+  showAlertDialogSignUp(BuildContext context, String e) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget signin = FlatButton(
+      child: Text("Đăng Nhập"),
+      onPressed: _buttonLog
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Thông Báo !"),
+      content: Text("Bạn đã đăng kí thành công"),
+      actions: [
+        okButton,
+        signin,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   showAlertDialogSignIn(BuildContext context, String e) {
@@ -186,46 +231,6 @@ class _LoginState extends State<Login> {
   }
 
 /* Sign Up and ShowAler */
-
-  void signUp() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: _email, password: _password);
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) => SignIn()));
-      } catch (e) {
-        print(e.message);
-      }
-    }
-  }
-
-  showAlertDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Thông Báo !"),
-      content: Text("Kiểm tra lại tài khoản hoặc mật khẩu"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
 
   String validateEmail(String input) {
     Pattern pattern =
