@@ -1,21 +1,25 @@
-// import 'package:duan_cntt2/src/constants/constants.dart';
-import 'package:duan_cntt2/src/UI/homePage/home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:duan_cntt2/src/constants/constants.dart';
 import 'package:flutter/material.dart';
-// import 'package:url_launcher/url_launcher.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'CustomIcons.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hexcolor/hexcolor.dart';
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => new _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  bool _buttonChange = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
-  String _email, _password;
-  bool _validate = false;
-
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final HttpLink httpLink = HttpLink(
+    uri: 'https://api.github.com/graphql',
+  );
+  final storage = FlutterSecureStorage();
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -25,238 +29,313 @@ class _LoginState extends State<Login> {
     return false;
   }
 
-  /* void hide-show Passowrd */
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
     });
   }
 
-  void _buttonLog() {
-    setState(() {
-      _buttonChange = !_buttonChange;
-      _formKey.currentState.reset();
-    });
-  }
-
-  void _hide() {
-    setState(() {
-      Navigator.of(context).pop();
-    });
-  }
-
-  Widget formui() {
-    return new Column(
-      children: <Widget>[
-        new Hero(
-          tag: 'hero',
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              radius: 48.0,
-              child: Image.asset('lib/src/img/login_logo.png'),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-          child: new TextFormField(
-              maxLines: 1,
-              decoration: new InputDecoration(
-                  hintText: 'Email',
-                  icon: new Icon(
-                    Icons.mail,
-                    color: Colors.grey,
-                  )),
-              keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,
-              onSaved: (String val) {
-                _email = val;
-              }),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-          child: new TextFormField(
-              maxLines: 1,
-              decoration: new InputDecoration(
-                  hintText: 'Password',
-                  icon: new Icon(
-                    Icons.lock,
-                    color: Colors.grey,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
-                    onPressed: _toggle,
-                  )),
-              obscureText: _obscureText,
-              keyboardType: TextInputType.emailAddress,
-              validator: validatePassword,
-              autofocus: false,
-              onSaved: (String val) {
-                _password = val;
-              }),
-        ),
-        new SizedBox(height: 15.0),
-        _buttonChange
-            ? new RaisedButton(
-                onPressed: signUp,
-                child: new Text('Đăng Kí'),
-              )
-            : new RaisedButton(
-                onPressed: signIn,
-                child: new Text('Đăng Nhập'),
-              ),
-        _buttonChange
+  bool _validate = false;
+  Widget radioButton(bool isSelected) => Container(
+        width: 16.0,
+        height: 16.0,
+        padding: EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(width: 2.0, color: Colors.black)),
+        child: isSelected
             ? Container(
-                padding: EdgeInsets.only(top: 10),
-                child: new InkWell(
-                  child: Text("Bạn đã có tài khoản rồi , đăng nhập ngay !!"),
-                  onTap: _buttonLog,
-                ),
+                width: double.infinity,
+                height: double.infinity,
+                decoration:
+                    BoxDecoration(shape: BoxShape.circle, color: Colors.black),
               )
-            : Container(
-                padding: EdgeInsets.only(top: 10),
-                child: new InkWell(
-                    child: Text("Bạn chưa có tài khoản , đăng kí ngay !!"),
-                    onTap: _buttonLog),
-              )
-      ],
-    );
-  }
+            : Container(),
+      );
 
-/* Sign In and ShowAler */
-  void signIn() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      try {
-        AuthResult result = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: _password);
-        FirebaseUser user = result.user;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home(user: user)));
-      } catch (e) {
-        print(e.message);
-        showAlertDialogSignIn(context, e.message);
-      }
-    }
-  }
+  Widget horizontalLine() => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          width: ScreenUtil.getInstance().setWidth(120),
+          height: 1.0,
+          color: Colors.black26.withOpacity(.2),
+        ),
+      );
 
-  void signUp() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: _email, password: _password);
-        showAlertDialogSignUp(context, 'e.mesage');
-      } catch (e) {
-        print(e.message);
-      }
-    }
-  }
+  Future<String> attemptLogIn(String username, String password) async {
+    
+    var res = await http
+        .post("", body: {"username": username, "password": password});
+    if (res.statusCode == 200) return res.body;
 
-  showAlertDialogSignUp(BuildContext context, String e) {
-    // set up the button
-
-    Widget okButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget signin = FlatButton(
-        child: Text("Đăng Nhập"),
-        onPressed: () {
-          _buttonLog();
-          _hide();
-        });
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Thông Báo !"),
-      content: Text("Bạn đã đăng kí thành công"),
-      actions: [
-        okButton,
-        signin,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  showAlertDialogSignIn(BuildContext context, String e) {
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("Đóng!"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Thông Báo !"),
-      content: Text("Kiểm tra lại tài khoản hoặc mật khẩu"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  String validateEmail(String input) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(input))
-      return 'Định dạng email chưa đúng !';
-    else
-      return null;
-  }
-
-  String validatePassword(String value) {
-    String pattern = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*?[0-9])';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0) {
-      return "Password không được bỏ trống";
-    } else if (!regExp.hasMatch(value)) {
-      return "Password phải bắt đầu chữ in hoa , và phải có ít nhất 1 chữ số ";
-    }
     return null;
   }
 
-/* Sign Up and ShowAler */
+  void displayDialog(context, title, text) => showDialog(
+        context: context,
+        builder: (context) =>
+            AlertDialog(title: Text(title), content: Text(text)),
+      );
+  @override
+    Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    return new Scaffold(
+      backgroundColor: Hexcolor("#FBFCF6"),
+      resizeToAvoidBottomPadding: true,
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
 
+              Expanded(
+                child: Container(),
+              ),
+              Image.asset("lib/src/img/image_02.png"),
+            ],
+          ),
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Image.asset(
+                      "lib/src/img/banner.png",
+                    ),
+                  ),
+
+                  Form(
+                      key: _formKey,
+                      autovalidate: _validate,
+                      child: (Container(
+                        width: double.infinity,
+                        height: ScreenUtil.getInstance().setHeight(500),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(0.0, 15.0),
+                                  blurRadius: 15.0),
+                              BoxShadow(
+                                  color: Colors.black12,
+                                  offset: Offset(0.0, -10.0),
+                                  blurRadius: 10.0),
+                            ]),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: 16.0, right: 16.0, top: 16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text("Login",
+                                  style: TextStyle(
+                                      fontSize:
+                                          ScreenUtil.getInstance().setSp(45),
+                                      fontFamily: "Poppins-Bold",
+                                      letterSpacing: .6)),
+                              SizedBox(
+                                height: ScreenUtil.getInstance().setHeight(30),
+                              ),
+                              Text("Username",
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Medium",
+                                      fontSize:
+                                          ScreenUtil.getInstance().setSp(26))),
+                              TextField(
+                                decoration: InputDecoration(
+                                  hintText: "username",
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 12.0),
+                                ),
+                                keyboardType: TextInputType.text,
+                                controller: _usernameController,
+                              ),
+                              SizedBox(
+                                height: ScreenUtil.getInstance().setHeight(30),
+                              ),
+                              Text("PassWord",
+                                  style: TextStyle(
+                                      fontFamily: "Poppins-Medium",
+                                      fontSize:
+                                          ScreenUtil.getInstance().setSp(26))),
+                              TextFormField(
+                                obscureText: _obscureText,
+                                decoration: InputDecoration(
+                                  hintText: "Password",
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey, fontSize: 12.0),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureText
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Theme.of(context).primaryColorDark,
+                                    ),
+                                    onPressed: _toggle,
+                                  ),
+                                ),
+                                keyboardType: TextInputType.text,
+                                controller: _passwordController,
+                              ),
+                              SizedBox(
+                                height: ScreenUtil.getInstance().setHeight(35),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ))),
+                  SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        child: Container(
+                          width: ScreenUtil.getInstance().setWidth(330),
+                          height: ScreenUtil.getInstance().setHeight(100),
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                                Color(0xFF17ead9),
+                                Color(0xFF6078ea)
+                              ]),
+                              borderRadius: BorderRadius.circular(6.0),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color(0xFF6078ea).withOpacity(.3),
+                                    offset: Offset(0.0, 8.0),
+                                    blurRadius: 8.0)
+                              ]),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                {
+          Navigator.pushNamed(context, Constants.homepage);
+        }
+                              }
+                              // async {
+                              //   var username = _usernameController.text;
+                              //   var password = _passwordController.text;
+                              //   var jwt = await attemptLogIn(username, password);
+                              //   if (jwt != '{"error":{"message":"login fail"}}') {
+                              //     storage.write(key: "jwt", value: jwt);
+                              //     Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //             builder: (context) =>
+                              //                 HomePage.fromBase64(jwt)));
+                              //   }   
+                              //     else {
+                              //     displayDialog(context, "An Error Occurred",
+                              //         "No account was found matching that username and password");
+                              //   }
+                              // },
+                              ,
+                              child: Center(
+                                child: Text("Đăng Nhập",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: "Poppins-Bold",
+                                        fontSize: 18,
+                                        letterSpacing: 1.0)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenUtil.getInstance().setHeight(40),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      horizontalLine(),
+                      Text("Social Login",
+                          style: TextStyle(
+                              fontSize: 16.0, fontFamily: "Poppins-Medium")),
+                      horizontalLine()
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenUtil.getInstance().setHeight(40),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SocialIcon(
+                        colors: [
+                          Color(0xFF102397),
+                          Color(0xFF187adf),
+                          Color(0xFF00eaf8),
+                        ],
+                        iconData: CustomIcons.facebook,
+                        onPressed: () {},
+                      ),
+                      SocialIcon(
+                        colors: [
+                          Color(0xFFff4f38),
+                          Color(0xFFff355d),
+                        ],
+                        iconData: CustomIcons.googlePlus,
+                        onPressed: () {},
+                      ),
+                      SocialIcon(
+                        colors: [
+                          Color(0xFF17ead9),
+                          Color(0xFF6078ea),
+                        ],
+                        iconData: CustomIcons.twitter,
+                        onPressed: () {},
+                      ),
+                      SocialIcon(
+                        colors: [
+                          Color(0xFF00c6fb),
+                          Color(0xFF005bea),
+                        ],
+                        iconData: CustomIcons.linkedin,
+                        onPressed: () {},
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenUtil.getInstance().setHeight(30),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SocialIcon extends StatelessWidget {
+  final List<Color> colors;
+  final IconData iconData;
+  final Function onPressed;
+  SocialIcon({this.colors, this.iconData, this.onPressed});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: new Scaffold(
-        appBar: AppBar(
-          title: _buttonChange ? Text("Đăng kí") : Text("Đăng Nhập"),
-        ),
-        body: new SingleChildScrollView(
-          child: new Container(
-            margin: new EdgeInsets.all(15.0),
-            child: new Form(
-              key: _formKey,
-              autovalidate: _validate,
-              child: formui(),
-            ),
-          ),
+    return new Padding(
+      padding: EdgeInsets.only(left: 14.0),
+      child: Container(
+        width: 45.0,
+        height: 45.0,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(colors: colors, tileMode: TileMode.clamp)),
+        child: RawMaterialButton(
+          shape: CircleBorder(),
+          onPressed: onPressed,
+          child: Icon(iconData, color: Colors.white),
         ),
       ),
     );
