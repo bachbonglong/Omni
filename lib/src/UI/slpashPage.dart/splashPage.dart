@@ -1,4 +1,5 @@
 
+// import 'package:duan_cntt2/src/UI/Hien_Widget/demo.dart';
 import 'package:duan_cntt2/src/UI/Login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
@@ -15,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
         seconds: 5,
         navigateAfterSeconds: new AfterSplash(),
         image: new Image.asset(
-            'lib/src/img/banner.png',
+            'lib/src/res/img/banner.png',
             ),
         backgroundColor: Hexcolor("#FBFCF6"),
         styleTextUnderTheLoader: new TextStyle(),
@@ -28,6 +29,9 @@ class _SplashPageState extends State<SplashPage> {
 class AfterSplash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Login();
+    // return Demo();  // Nếu muốn tự viết ra Demo thì xài cái này
+    return Login(); // Nếu muốn sửa lại file thì xài cái này
+
+    // Ctrl + /
   }
 }

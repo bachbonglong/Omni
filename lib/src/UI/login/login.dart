@@ -1,11 +1,11 @@
 import 'package:duan_cntt2/src/constants/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'CustomIcons.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+// import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => new _LoginState();
@@ -16,9 +16,7 @@ class _LoginState extends State<Login> {
   bool _obscureText = true;
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final HttpLink httpLink = HttpLink(
-    uri: 'https://api.github.com/graphql',
-  );
+
   final storage = FlutterSecureStorage();
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -62,14 +60,6 @@ class _LoginState extends State<Login> {
         ),
       );
 
-  Future<String> attemptLogIn(String username, String password) async {
-    
-    var res = await http
-        .post("", body: {"username": username, "password": password});
-    if (res.statusCode == 200) return res.body;
-
-    return null;
-  }
 
   void displayDialog(context, title, text) => showDialog(
         context: context,
@@ -77,7 +67,7 @@ class _LoginState extends State<Login> {
             AlertDialog(title: Text(title), content: Text(text)),
       );
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
@@ -90,11 +80,10 @@ class _LoginState extends State<Login> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-
               Expanded(
                 child: Container(),
               ),
-              Image.asset("lib/src/img/image_02.png"),
+              Image.asset("lib/src/res/img/image_02.png"),
             ],
           ),
           SingleChildScrollView(
@@ -104,10 +93,9 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   Container(
                     child: Image.asset(
-                      "lib/src/img/banner.png",
+                      "lib/src/res/img/banner.png",
                     ),
                   ),
-
                   Form(
                       key: _formKey,
                       autovalidate: _validate,
@@ -215,8 +203,9 @@ class _LoginState extends State<Login> {
                             child: InkWell(
                               onTap: () {
                                 {
-          Navigator.pushNamed(context, Constants.homepage);
-        }
+                                  Navigator.pushNamed(
+                                      context, Constants.homepage);
+                                }
                               }
                               // async {
                               //   var username = _usernameController.text;
@@ -229,7 +218,7 @@ class _LoginState extends State<Login> {
                               //         MaterialPageRoute(
                               //             builder: (context) =>
                               //                 HomePage.fromBase64(jwt)));
-                              //   }   
+                              //   }
                               //     else {
                               //     displayDialog(context, "An Error Occurred",
                               //         "No account was found matching that username and password");
