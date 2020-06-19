@@ -14,10 +14,10 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 module:
-  androidX: true 
+  androidX: true
 
 dependencies:
   flutter:
@@ -33,45 +33,47 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
-
-    
-
-  font_awesome_flutter: ^8.0.1  #Font logo    #Firebase cloud
-  # url_launcher: ^3.0.3          #Launcher URL
-  flutter_auth_buttons: ^0.6.0  #Flutter Auth Buttons
-  splashscreen:                 #Flutter SplashScreen
+  font_awesome_flutter: ^8.0.1 #Font logo
+  url_launcher: ^5.4.7 #Launcher URL
+  flutter_auth_buttons: ^0.6.0 #Flutter Auth Buttons
+  splashscreen: #Flutter SplashScreen
   shared_preferences: ^0.5.3+4
-  firebase_database: ^3.1.3
   http: ^0.12.0+4
   flutter_screenutil: ^0.4.2
   flutter_secure_storage: ^3.3.1+1
   hexcolor: ^1.0.1
-  graphql_flutter: ^3.0.0
+  graphql_flutter: ^3.0.1
   fl_chart: ^0.9.2
   pull_to_refresh: ^1.4.8
-  
-
+  keyboard_dismisser: 1.0.2
+  direct_select: ^1.0.0
+  permission_handler: ^5.0.0+hotfix.8
+  fast_qr_reader_view:
+    git:
+      url: git://github.com/SoftWyer/fast_qr_reader_view.git
+      ref: 9b360e868026ddf880570e8b458ec26879fc8edb
+      #url: git://github.com/facundomedica/fast_qr_reader_view.git
 
 flutter:
-
   uses-material-design: true
 
   assets:
-      - lib/src/img/image_01.png
-      - lib/src/img/image_02.png
-      - lib/src/img/logo.png
-      - lib/src/img/login_logo.png
-      - lib/src/img/banner.png
-
+    - lib/src/res/img/image_01.png
+    - lib/src/res/img/image_02.png
+    - lib/src/res/img/logo.png
+    - lib/src/res/img/login_logo.png
+    - lib/src/res/img/banner.png
+    - lib/src/res/img/background.png
+    - lib/src/res/img/scanqr.png
   fonts:
     - family: CustomIcons
       fonts:
-        - asset: lib/src/fonts/CustomIcons.ttf
+        - asset: lib/src/res/fonts/CustomIcons.ttf
 
     - family: Poppins-Bold
       fonts:
-        - asset: lib/src/fonts/Poppins-Bold.ttf
+        - asset: lib/src/res/fonts/Poppins-Bold.ttf
 
     - family: Poppins-Medium
       fonts:
-        - asset: lib/src/fonts/Poppins-Medium.ttf    
+        - asset: lib/src/res/fonts/Poppins-Medium.ttf

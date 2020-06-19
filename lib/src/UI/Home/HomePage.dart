@@ -1,10 +1,12 @@
-import 'package:duan_cntt2/src/UI/Home/Assignment.dart';
-import 'package:duan_cntt2/src/UI/Home/More.dart';
-import 'package:duan_cntt2/src/UI/Home/Product.dart';
 import 'package:duan_cntt2/src/UI/Home/Home.dart';
-import 'package:duan_cntt2/src/UI/Home/Report.dart';
+import 'package:duan_cntt2/src/UI/More/More.dart';
+import 'package:duan_cntt2/src/UI/Order/Order.dart';
+import 'package:duan_cntt2/src/UI/Product/Product.dart';
+import 'package:duan_cntt2/src/UI/WareHouse/WareHouse.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -87,17 +89,28 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Home(),
           Product(),
-          Assignment(),
-          Report(),
+          Order(),
+          WareHouse(),
           More(),
         ],
       ),
       bottomNavigationBar: Container(
-        color: Colors.white,
+        // decoration: BoxDecoration(
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.15),   // Bóng !!
+        //     offset: Offset(0.8, 10.0),
+        //     blurRadius: 9.0,
+        //     spreadRadius: 2.0,
+        //   ),
+        // ],
+        // ),
+        padding: EdgeInsets.only(top:5),
+        color: Hexcolor("#DCD9CD").withOpacity(0.05), //màu nền tab bar !!
         child: TabBar(
-          labelColor: const Color(0xFF3baee7),
-          indicatorWeight: 2,
-          indicatorColor: Colors.blue[100],
+          labelColor: Colors.black,
+          indicatorWeight: 1,
+          indicatorColor: Colors.white,
           controller: _tabController,
           labelPadding: EdgeInsets.all(0.0),
           tabs: <Widget>[
@@ -129,7 +142,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
               icon: Column(
                 children: <Widget>[
                   Icon(Icons.assessment),
-                  Text("Báo Cáo")
+                  Text("Kho Hàng")
                 ],
               ),
             ),
