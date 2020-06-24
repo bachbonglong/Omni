@@ -214,10 +214,7 @@ class _More extends State<More> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       FlatButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, Constants.statusorderDonggoi);
-                        },
+                        onPressed: () {Navigator.of(context).pushNamedAndRemoveUntil(Constants.login,(Route<dynamic> route) => false);},
                         child: Container(
                           padding: EdgeInsets.all(10),
                           child: Row(

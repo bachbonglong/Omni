@@ -42,11 +42,13 @@ dev_dependencies:
   flutter_screenutil: ^0.4.2
   flutter_secure_storage: ^3.3.1+1
   hexcolor: ^1.0.1
-  graphql_flutter: ^3.0.1
+  graphql_flutter: 3.0.0
   fl_chart: ^0.9.2
   pull_to_refresh: ^1.4.8
   keyboard_dismisser: 1.0.2
+  commons: ^0.7.8+1
   direct_select: ^1.0.0
+  connectivity_macos: ^0.1.0+3
   permission_handler: ^5.0.0+hotfix.8
   fast_qr_reader_view:
     git:
