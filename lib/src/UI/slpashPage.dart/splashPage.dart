@@ -1,6 +1,6 @@
 
 // import 'package:duan_cntt2/src/UI/Hien_Widget/demo.dart';
-import 'package:duan_cntt2/src/UI/Login/login.dart';
+import 'package:duan_cntt2/src/UI/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:hexcolor/hexcolor.dart';

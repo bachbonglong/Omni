@@ -2,12 +2,14 @@ import 'package:duan_cntt2/src/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Product extends StatefulWidget {
-  Product({Key key}) : super(key: key);
-
+  //  final linkToken;
+  //  Product(this.linkToken);
   @override
   _Product createState() => _Product();
+  // _Product(this.linkToken);
 }
 
 class _Product extends State<Product> with SingleTickerProviderStateMixin {
@@ -15,7 +17,8 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
   }
-
+  //  final linkToken;
+  // _Product(this.linkToken);
   List<String> _phanloai = [
     'Tất Cả Sản Phẩm'
         'Áo Nam',
@@ -24,6 +27,12 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
     'Quần Nữ'
   ]; // Option 2
   String _selectPhanloai; // Option 2
+    //   final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
+    //   GraphQLClient(  
+    //     link:  linkToken,
+    //     cache: InMemoryCache(),
+    //   ),
+    // );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
