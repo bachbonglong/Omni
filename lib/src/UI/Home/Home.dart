@@ -1,9 +1,11 @@
 import 'package:duan_cntt2/src/utils/widget/Chart.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql/src/graphql_client.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key}) : super(key: key);
+  Home({Key key, this.client}) : super(key: key);
+  final GraphQLClient client;
 
   @override
   _Home createState() => _Home();
@@ -28,14 +30,14 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
             },
           ),
           title: Container(
-            child:Text(
-                    'Trang Chủ ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 27,
-                      color: (const Color(0xff413b3b)),
-                    ),
-                  ),
+            child: Text(
+              'Trang Chủ ',
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 27,
+                color: (const Color(0xff413b3b)),
+              ),
+            ),
           )),
       body: Container(
         decoration: BoxDecoration(
@@ -61,7 +63,6 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin {
                     style: TextStyle(
                       fontSize: 27,
                       color: (const Color(0xff413b3b)),
-                      
                     ),
                   ),
                 ),

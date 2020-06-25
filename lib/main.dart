@@ -37,8 +37,14 @@ import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/constants/constants.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:splashscreen/splashscreen.dart';
+import 'package:hexcolor/hexcolor.dart';
 
-class GraphQLConfig extends StatefulWidget{
+import 'src/UI/Home/Home.dart';
+import 'src/UI/login/login.dart';
+import 'src/UI/login/login.dart';
+
+class GraphQLConfig extends StatefulWidget {
   @override
   _GrahpQLConfigState createState() => _GrahpQLConfigState();
 }
@@ -46,6 +52,7 @@ class GraphQLConfig extends StatefulWidget{
 class _GrahpQLConfigState extends State<GraphQLConfig> {
   final storage = new FlutterSecureStorage();
   ValueNotifier<GraphQLClient> _valueNotifier;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -55,33 +62,65 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
 
   @override
   Widget build(BuildContext context) {
-return  GraphQLProvider(
-  client: _valueNotifier,
-  child:   MaterialApp(
-    home: SplashPage(),
-    debugShowCheckedModeBanner: false,
-    onGenerateRoute: routes,
-  ),
-); }
+    return GraphQLProvider(
+      client: _valueNotifier,
+      child: CacheProvider(
+        child: MaterialApp(
+          home: SplashScreen(
+              seconds: 5,
+              navigateAfterSeconds: FutureBuilder(
+                future: storage.read(key: "jwt"),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                    case ConnectionState.active:
+                      return Container();
+                      break;
+                    case ConnectionState.done:
+                      if (!snapshot.hasData) {
+                        return Login(client: _valueNotifier.value);
+                      }
+                      return Home(client: _valueNotifier.value);
+                      break;
+                  }
+                  return Container();
+                },
+              ),
+              image: new Image.asset(
+                'lib/src/res/img/banner.png',
+              ),
+              backgroundColor: Hexcolor("#FBFCF6"),
+              styleTextUnderTheLoader: new TextStyle(),
+              photoSize: 150.0,
+              onClick: () {},
+              loaderColor: Colors.red),
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: routes,
+        ),
+      ),
+    );
+  }
+
   Route routes(RouteSettings settings) {
     switch (settings.name) {
-      case Constants.splashScreen:
-        return new MaterialPageRoute(
-          builder: (context) {
-            return SplashPage();
-          },
-        );
-        break;
+//      case Constants.splashScreen:
+//        return new MaterialPageRoute(
+//          builder: (context) {
+//            return SplashPage();
+//          },
+//        );
+//        break;
       case Constants.login:
         return new MaterialPageRoute(
           builder: (context) {
-            return Login(/*_valueNotifier.value*/);
+            return Login(client: _valueNotifier.value);
           },
         );
         break;
       case Constants.homepage:
         return new MaterialPageRoute(
-
           builder: (context) {
             return HomePage();
           },
@@ -323,12 +362,13 @@ return  GraphQLProvider(
   void _initClient() {
     HttpLink link = HttpLink(uri: "https://api-dev.azsales.vn/graphql");
     AuthLink authLink = AuthLink(getToken: () async {
-return storage.read(key: "jwt").then((value) => value);
+      return storage.read(key: "jwt").then((value) => value);
     });
     link.concat(authLink);
 
-     _valueNotifier= ValueNotifier(GraphQLClient(link: link,cache: InMemoryCache()));
+    _valueNotifier =
+        ValueNotifier(GraphQLClient(link: link, cache: InMemoryCache()));
   }
 }
-void main() => runApp(GraphQLConfig());
 
+void main() => runApp(GraphQLConfig());
