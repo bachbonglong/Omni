@@ -1,11 +1,8 @@
 import 'package:duan_cntt2/src/utils/widget/Chart.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql/src/graphql_client.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class Home extends StatefulWidget {
-  Home({Key key, this.client}) : super(key: key);
-  final GraphQLClient client;
 
   @override
   _Home createState() => _Home();

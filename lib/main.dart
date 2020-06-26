@@ -1,4 +1,3 @@
-import 'package:duan_cntt2/src/API/query.dart';
 import 'package:duan_cntt2/src/UI/Home/Home.dart';
 import 'package:duan_cntt2/src/UI/Home/HomePage.dart';
 import 'package:duan_cntt2/src/UI/Order/AddCustomer.dart';
@@ -31,7 +30,6 @@ import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseDuyet.dart';
 import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseHoanThanh.dart';
 import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseNhapKho.dart';
 import 'package:duan_cntt2/src/UI/login/login.dart';
-import 'package:duan_cntt2/src/UI/slpashPage.dart/splashPage.dart';
 import 'package:duan_cntt2/src/utils/widget/scanQR.dart';
 import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/constants/constants.dart';
@@ -41,7 +39,7 @@ import 'package:splashscreen/splashscreen.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'src/UI/Home/Home.dart';
-import 'src/UI/login/login.dart';
+import 'src/UI/Home/HomePage.dart';
 import 'src/UI/login/login.dart';
 
 class GraphQLConfig extends StatefulWidget {
@@ -55,7 +53,6 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _initClient();
     super.initState();
   }
@@ -82,7 +79,7 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
                       if (!snapshot.hasData) {
                         return Login(client: _valueNotifier.value);
                       }
-                      return Home(client: _valueNotifier.value);
+                      return HomePage(client: _valueNotifier.value);
                       break;
                   }
                   return Container();
@@ -105,13 +102,6 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
 
   Route routes(RouteSettings settings) {
     switch (settings.name) {
-//      case Constants.splashScreen:
-//        return new MaterialPageRoute(
-//          builder: (context) {
-//            return SplashPage();
-//          },
-//        );
-//        break;
       case Constants.login:
         return new MaterialPageRoute(
           builder: (context) {
@@ -143,7 +133,7 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
       case Constants.product:
         return new MaterialPageRoute(
           builder: (context) {
-            return Product();
+            return Product(client: _valueNotifier.value,);
           },
         );
         break;
@@ -363,8 +353,10 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
     HttpLink link = HttpLink(uri: "https://api-dev.azsales.vn/graphql");
     AuthLink authLink = AuthLink(getToken: () async {
       return storage.read(key: "jwt").then((value) => value);
+      
     });
-    link.concat(authLink);
+
+    authLink.concat(link);
 
     _valueNotifier =
         ValueNotifier(GraphQLClient(link: link, cache: InMemoryCache()));
