@@ -12,28 +12,31 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../API/query.dart';
 import 'package:commons/commons.dart';
 
-class Graphql extends StatelessWidget {
- @override
- Widget build(BuildContext context) {
-   final HttpLink httpLink =
-       HttpLink(uri: 'https://api-dev.azsales.vn/graphql'); //Test
-
-   final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
-     GraphQLClient(
-       link: httpLink,
-       cache: InMemoryCache(),
-     ),
-   );
-   return GraphQLProvider(
-     child: Login(),
-     client: client,
-   );
- }
-}
+//
+//class Graphql extends StatelessWidget {
+//  @override
+//  Widget build(BuildContext context) {
+//    final HttpLink httpLink =
+//        HttpLink(uri: 'https://api-dev.azsales.vn/graphql'); //Test
+//
+//    final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
+//      GraphQLClient(
+//        link: httpLink,
+//        cache: InMemoryCache(),
+//      ),
+//    );
+//    return GraphQLProvider(
+//      child: Login(),
+//      client: client,
+//    );
+//  }
+//}
 
 class Login extends StatefulWidget {
-//   Login(this.client);
-// final  GraphQLClient client;
+  Login({@required this.client});
+
+  final GraphQLClient client;
+
   @override
   _LoginState createState() => new _LoginState();
 }
@@ -46,6 +49,7 @@ class _LoginState extends State<Login> {
   String username;
   String password;
   final storage = new FlutterSecureStorage();
+
   Future<String> get jwtOrEmpty async {
     var jwt = await storage.read(key: "jwt");
     if (jwt == null) return "";
@@ -68,6 +72,7 @@ class _LoginState extends State<Login> {
   }
 
   bool _validate = false;
+
   Widget radioButton(bool isSelected) => Container(
         width: 16.0,
         height: 16.0,
@@ -102,6 +107,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final client = widget.client;
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
@@ -265,7 +271,7 @@ class _LoginState extends State<Login> {
                                       return _showDialog();
                                     else {
                                       var jwt = result.data['auth']['login']
-                                            ['accessToken'];
+                                          ['accessToken'];
                                       storage.write(key: "jwt", value: jwt);
                                       print(jwt);
                                       Navigator.push(
@@ -273,7 +279,7 @@ class _LoginState extends State<Login> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SetTokenHeader(jwt)));
-                                  }
+                                    }
                                   },
                                   child: Center(
                                     child: Text("Đăng Nhập",
@@ -369,7 +375,9 @@ class SocialIcon extends StatelessWidget {
   final List<Color> colors;
   final IconData iconData;
   final Function onPressed;
+
   SocialIcon({this.colors, this.iconData, this.onPressed});
+
   @override
   Widget build(BuildContext context) {
     return new Padding(
