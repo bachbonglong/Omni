@@ -1,9 +1,7 @@
-import 'package:duan_cntt2/src/UI/Home/HomePage.dart';
-import 'package:duan_cntt2/src/constants/constants.dart';
+
 import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/API/token.dart';
 
-// import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'CustomIcons.dart';
@@ -12,25 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../API/query.dart';
 import 'package:commons/commons.dart';
 
-//
-//class Graphql extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    final HttpLink httpLink =
-//        HttpLink(uri: 'https://api-dev.azsales.vn/graphql'); //Test
-//
-//    final ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
-//      GraphQLClient(
-//        link: httpLink,
-//        cache: InMemoryCache(),
-//      ),
-//    );
-//    return GraphQLProvider(
-//      child: Login(),
-//      client: client,
-//    );
-//  }
-//}
+
 
 class Login extends StatefulWidget {
   Login({@required this.client});
@@ -50,11 +30,6 @@ class _LoginState extends State<Login> {
   String password;
   final storage = new FlutterSecureStorage();
 
-  Future<String> get jwtOrEmpty async {
-    var jwt = await storage.read(key: "jwt");
-    if (jwt == null) return "";
-    return jwt;
-  }
 
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -107,7 +82,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final client = widget.client;
+    // final client = widget.client;
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
@@ -267,11 +242,18 @@ class _LoginState extends State<Login> {
                                   onTap: () async {
                                     if (result.data['auth']['login']
                                             ['accessToken'] ==
-                                        null)
-                                      return _showDialog();
-                                    else {
+                                        null) {
                                       var jwt = result.data['auth']['login']
                                           ['accessToken'];
+                                      print(jwt);
+                                      return _showDialog();
+                                    } else {
+                                      var jwt =result.data['auth']['login']
+                                          ['accessToken'];
+
+                                          //                                       var jwt = 'Bearer' + result.data['auth']['login']
+                                          // ['accessToken'];
+                                      
                                       storage.write(key: "jwt", value: jwt);
                                       print(jwt);
                                       Navigator.push(

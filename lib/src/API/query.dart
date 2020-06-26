@@ -8,10 +8,13 @@ const String getToken = r'''
   }
   ''';
 
-  const String queryTest = r"""
-                   query{
-                    continents{
-                              name
-                               }
-                          }
+  const String products = r"""
+query {
+  product {
+    products {
+      name
+    }
+  }
+}
+
                   """;

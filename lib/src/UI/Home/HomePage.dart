@@ -6,23 +6,23 @@ import 'package:duan_cntt2/src/UI/WareHouse/WareHouse.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
 
 
 class HomePage extends StatefulWidget {
-  // final linkToken;
-  //  HomePage(this.linkToken);
+  HomePage({Key key, this.client}) : super(key: key);
+  final GraphQLClient client;
+
      @override
     State<StatefulWidget> createState() {
     return _HomePage(
-      // this.linkToken
       );
   }
 }
 
 class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
   TabController _tabController;
-  // final linkToken;
-  // _HomePage(this.linkToken);
   @override
   void initState() {
     _tabController = TabController(length: 5, initialIndex: 0, vsync: this);
@@ -36,7 +36,7 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
         controller: _tabController,
         children: <Widget>[
           Home(),
-          Product(/*linkToken*/),
+          Product(client: widget.client,),
           Order(),
           WareHouse(),
           More(),
