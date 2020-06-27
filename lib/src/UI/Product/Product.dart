@@ -9,32 +9,17 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class Product extends StatefulWidget {
   Product({@required this.client});
 
-
   final GraphQLClient client;
+
   @override
   _Product createState() => _Product();
 }
 
 class _Product extends State<Product> with SingleTickerProviderStateMixin {
-    final storage = new FlutterSecureStorage();
-    Future<String>  jwtOrEmpty() async {
-    var jwt = await storage.read(key: "jwt");
-    if (jwt == null)
-      return "";
-    else {
-      print(jwt);
-      return jwt;
-    }
-  }
-  void _printToken() {
-    jwtOrEmpty();
-    
-  }
   @override
   void initState() {
     super.initState();
   }
-
 
   List<String> _phanloai = [
     'Tất Cả Sản Phẩm'
@@ -42,8 +27,8 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
     'Dép Nữ',
     'Quần Nam',
     'Quần Nữ'
-  ]; 
-  String _selectPhanloai; 
+  ];
+  String _selectPhanloai;
 
   @override
   Widget build(BuildContext context) {
@@ -105,44 +90,41 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
                 child: Column(
                   children: <Widget>[
                     Text("Không có Data"),
-                    FloatingActionButton(
-                      onPressed: _printToken,
-                    )
                   ],
                 ),
-                
               );
             }
             if (result.data == null) {
-            return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("lib/src/res/img/background.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await new Future.delayed(const Duration(seconds: 2));
-                },
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      new Container(padding: EdgeInsets.all(10)),
-                      Container(child: Search()),
-                      new Container(padding: EdgeInsets.all(10)),
-                      PhanLoai(
-                          selectPhanloai: _selectPhanloai, phanloai: _phanloai),
-                      new Container(padding: EdgeInsets.all(10)),
-                    ],
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("lib/src/res/img/background.png"),
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
-            );
-          }
-          return Container();
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await new Future.delayed(const Duration(seconds: 2));
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        new Container(padding: EdgeInsets.all(10)),
+                        Container(child: Search()),
+                        new Container(padding: EdgeInsets.all(10)),
+                        PhanLoai(
+                            selectPhanloai: _selectPhanloai,
+                            phanloai: _phanloai),
+                        new Container(padding: EdgeInsets.all(10)),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            return Container();
           }),
     );
   }
@@ -253,8 +235,8 @@ class _PhanLoaiState extends State<PhanLoai> {
             // add Expanded to have your dropdown button fill remaining space
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                isExpanded:
-                    true, // this allows your dropdown icon to be visible
+                isExpanded: true,
+                // this allows your dropdown icon to be visible
                 value: widget._selectPhanloai,
                 iconSize: 24,
                 style: TextStyle(

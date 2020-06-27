@@ -1,4 +1,4 @@
-
+import 'package:duan_cntt2/main.dart';
 import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/API/token.dart';
 
@@ -10,12 +10,10 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../API/query.dart';
 import 'package:commons/commons.dart';
 
-
-
 class Login extends StatefulWidget {
   Login({@required this.client});
 
-  final GraphQLClient client;
+  final ValueNotifier<GraphQLClient> client;
 
   @override
   _LoginState createState() => new _LoginState();
@@ -29,7 +27,6 @@ class _LoginState extends State<Login> {
   String username;
   String password;
   final storage = new FlutterSecureStorage();
-
 
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -248,13 +245,15 @@ class _LoginState extends State<Login> {
                                       print(jwt);
                                       return _showDialog();
                                     } else {
-                                      var jwt =result.data['auth']['login']
+                                      var jwt = result.data['auth']['login']
                                           ['accessToken'];
 
-                                          //                                       var jwt = 'Bearer' + result.data['auth']['login']
-                                          // ['accessToken'];
-                                      
+                                      //                                       var jwt = 'Bearer' + result.data['auth']['login']
+                                      // ['accessToken'];
+
                                       storage.write(key: "jwt", value: jwt);
+                                      final client = await initClient();
+                                      widget.client.value = client;
                                       print(jwt);
                                       Navigator.push(
                                           context,
