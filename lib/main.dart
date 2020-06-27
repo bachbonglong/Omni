@@ -53,12 +53,19 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
 
   @override
   void initState() {
-    _initClient();
+    initClient().then((value) {
+      _valueNotifier = ValueNotifier<GraphQLClient>(value);
+
+      setState(() {});
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_valueNotifier?.value == null) {
+      return Container();
+    }
     return GraphQLProvider(
       client: _valueNotifier,
       child: CacheProvider(
@@ -77,7 +84,7 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
                       break;
                     case ConnectionState.done:
                       if (!snapshot.hasData) {
-                        return Login(client: _valueNotifier.value);
+                        return Login(client: _valueNotifier);
                       }
                       return HomePage(client: _valueNotifier.value);
                       break;
@@ -105,7 +112,7 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
       case Constants.login:
         return new MaterialPageRoute(
           builder: (context) {
-            return Login(client: _valueNotifier.value);
+            return Login(client: _valueNotifier);
           },
         );
         break;
@@ -133,7 +140,9 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
       case Constants.product:
         return new MaterialPageRoute(
           builder: (context) {
-            return Product(client: _valueNotifier.value,);
+            return Product(
+              client: _valueNotifier.value,
+            );
           },
         );
         break;
@@ -348,19 +357,15 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
         return null;
     }
   }
+}
 
-  void _initClient() {
-    HttpLink link = HttpLink(uri: "https://api-dev.azsales.vn/graphql");
-    AuthLink authLink = AuthLink(getToken: () async {
-      return storage.read(key: "jwt").then((value) => value);
-      
-    });
+Future<GraphQLClient> initClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+  HttpLink link = HttpLink(
+      uri: "https://api-dev.azsales.vn/graphql",
+      headers: {"access_token": token});
 
-    authLink.concat(link);
-
-    _valueNotifier =
-        ValueNotifier(GraphQLClient(link: link, cache: InMemoryCache()));
-  }
+  return GraphQLClient(link: link, cache: InMemoryCache());
 }
 
 void main() => runApp(GraphQLConfig());
