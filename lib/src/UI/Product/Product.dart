@@ -4,7 +4,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:duan_cntt2/src/API/query.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Product extends StatefulWidget {
   Product({@required this.client});
@@ -33,6 +32,7 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: Hexcolor("#FFFFFF"),
         centerTitle: true,
@@ -83,9 +83,8 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
             if (result.loading) {
               return Center(child: CircularProgressIndicator());
             }
-            if (result.data == 1) {
+            if (result.data == null) {
               print(result.data);
-              print(result.exception);
               return Center(
                 child: Column(
                   children: <Widget>[
@@ -94,94 +93,208 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
                 ),
               );
             }
-            if (result.data == null) {
-              return Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("lib/src/res/img/background.png"),
-                    fit: BoxFit.cover,
-                  ),
+            return Container(
+              height: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("lib/src/res/img/background.png"),
+                  fit: BoxFit.cover,
                 ),
+              ),
+              child: SingleChildScrollView(
                 child: RefreshIndicator(
                   onRefresh: () async {
                     await new Future.delayed(const Duration(seconds: 2));
                   },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        new Container(padding: EdgeInsets.all(10)),
-                        Container(child: Search()),
-                        new Container(padding: EdgeInsets.all(10)),
-                        PhanLoai(
-                            selectPhanloai: _selectPhanloai,
-                            phanloai: _phanloai),
-                        new Container(padding: EdgeInsets.all(10)),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      new Container(padding: EdgeInsets.all(10)),
+                      Container(child: Search()),
+                      new Container(padding: EdgeInsets.all(10)),
+                      PhanLoai(
+                          selectPhanloai: _selectPhanloai, phanloai: _phanloai),
+                      new Container(padding: EdgeInsets.all(10)),
+                      listViewProduct(context, result)
+                    ],
                   ),
                 ),
-              );
-            }
-            return Container();
+              ),
+            );
+          }),
+    );
+  }
+
+  Container listViewProduct(BuildContext context, QueryResult result) {
+    return Container(
+      height: MediaQuery.of(context).size.width * 1.3,
+      child: new ListView.builder(
+          shrinkWrap: true,
+          itemCount: result.data['product']['products'].length,
+          itemBuilder: (BuildContext context, int index) {
+            return new Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    offset: Offset(0.8, 10.0),
+                    blurRadius: 9.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              height: 150,
+              margin: EdgeInsets.only(top: 10, bottom: 10),
+              alignment: Alignment.center,
+              child: OutlineButton(
+                onPressed: () {},
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    if (result.data['product']['products'][index]
+                            ['featured_photo'] ==
+                        null)
+                      Container(
+                        height: 130,
+                        child: new Image.network(
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/1280px-No_image_3x4.svg.png"),
+                      ),
+                    if (result.data['product']['products'][index]
+                            ['featured_photo'] !=
+                        null)
+                      Container(
+                        height: 130,
+                        child: new Image.network(result.data['product']
+                            ['products'][index]['featured_photo']['url']),
+                      ),
+                    new Expanded(child: Container()),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Text(
+                          (result.data['product']['products'][index]['name']),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff716767),
+                          ),
+                        ),
+                        if (result.data['product']['products'][index]
+                                ['sale_price'] ==
+                            null)
+                          new Text(
+                            (result.data['product']['products'][index]['price']
+                                    .toString() +
+                                " đ"),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff716767),
+                            ),
+                          ),
+                        if (result.data['product']['products'][index]
+                                ['sale_price'] !=
+                            null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Text(
+                                (result.data['product']['products'][index]
+                                            ['price']
+                                        .toString() +
+                                    " đ"),
+                                style: TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff716767),
+                                ),
+                              ),
+                              new Text(
+                                (result.data['product']['products'][index]
+                                            ['sale_price']
+                                        .toString() +
+                                    " đ"),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xff716767),
+                                ),
+                              ),
+                            ],
+                          )
+                      ],
+                    ),
+                    new Expanded(child: Container()),
+                    new Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black26,
+                    )
+                  ],
+                ),
+              ),
+            );
           }),
     );
   }
 }
 
-// class ListProduct extends StatelessWidget {
-//   const ListProduct({
-//     Key key,
-//   }) : super(key: key);
+class ListProduct extends StatelessWidget {
+  const ListProduct({
+    Key key,
+  }) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return new Container(
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(0.15),
-//             offset: Offset(0.8, 10.0),
-//             blurRadius: 9.0,
-//             spreadRadius: 2.0,
-//           ),
-//         ],
-//       ),
-//       height: 150,
-//       margin: EdgeInsets.only(top: 10, bottom: 10),
-//       alignment: Alignment.center,
-//       child: OutlineButton(
-//         onPressed: () {},
-//         child: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: <Widget>[
-//             Container(
-//               height: 130,
-//               child: new Image.network(
-//                   "https://product.hstatic.net/1000088324/product/2__2__128daeaf24aa421ab7f3868a1acbae6f_master.png"),
-//             ),
-//             new Expanded(child: Container()),
-//             new Text(
-//               "Áo TeenWorld",
-//               style: TextStyle(
-//                 fontSize: 18,
-//                 fontWeight: FontWeight.w400,
-//                 color: Color(0xff716767),
-//               ),
-//             ),
-//             new Expanded(child: Container()),
-//             new Icon(
-//               Icons.arrow_forward_ios,
-//               color: Colors.black26,
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            offset: Offset(0.8, 10.0),
+            blurRadius: 9.0,
+            spreadRadius: 2.0,
+          ),
+        ],
+      ),
+      height: 150,
+      margin: EdgeInsets.only(top: 10, bottom: 10),
+      alignment: Alignment.center,
+      child: OutlineButton(
+        onPressed: () {},
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              height: 130,
+              child: new Image.network(
+                  "https://product.hstatic.net/1000088324/product/2__2__128daeaf24aa421ab7f3868a1acbae6f_master.png"),
+            ),
+            new Expanded(child: Container()),
+            new Text(
+              "Áo TeenWorld",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff716767),
+              ),
+            ),
+            new Expanded(child: Container()),
+            new Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.black26,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class PhanLoai extends StatefulWidget {
   PhanLoai({

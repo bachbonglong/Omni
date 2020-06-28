@@ -8,16 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-
-
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.client}) : super(key: key);
   final GraphQLClient client;
 
-     @override
-    State<StatefulWidget> createState() {
-    return _HomePage(
-      );
+  @override
+  State<StatefulWidget> createState() {
+    return _HomePage();
   }
 }
 
@@ -36,14 +33,18 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
         controller: _tabController,
         children: <Widget>[
           Home(),
-          Product(client: widget.client,),
-          Order(),
+          Product(
+            client: widget.client,
+          ),
+          Order(
+            client: widget.client,
+          ),
           WareHouse(),
           More(),
         ],
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.only(top:5),
+        padding: EdgeInsets.only(top: 5),
         color: Hexcolor("#DCD9CD").withOpacity(0.05), //màu nền tab bar !!
         child: TabBar(
           labelColor: Colors.black,
@@ -54,42 +55,27 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
           tabs: <Widget>[
             Tab(
               icon: Column(
-                children: <Widget>[
-                  Icon(Icons.home),
-                  Text("Trang Chủ")
-                ],
+                children: <Widget>[Icon(Icons.home), Text("Trang Chủ")],
               ),
             ),
             Tab(
               icon: Column(
-                children: <Widget>[
-                  Icon(Icons.store),
-                  Text("Sản Phẩm")
-                ],
+                children: <Widget>[Icon(Icons.store), Text("Sản Phẩm")],
               ),
             ),
             Tab(
               icon: Column(
-                children: <Widget>[
-                  Icon(Icons.assignment),
-                  Text("Đơn Hàng")
-                ],
+                children: <Widget>[Icon(Icons.assignment), Text("Đơn Hàng")],
               ),
             ),
             Tab(
               icon: Column(
-                children: <Widget>[
-                  Icon(Icons.assessment),
-                  Text("Kho Hàng")
-                ],
+                children: <Widget>[Icon(Icons.assessment), Text("Kho Hàng")],
               ),
             ),
             Tab(
               icon: Column(
-                children: <Widget>[
-                  Icon(Icons.menu),
-                  Text("Thêm")
-                ],
+                children: <Widget>[Icon(Icons.menu), Text("Thêm")],
               ),
             ),
           ],
