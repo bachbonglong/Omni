@@ -177,7 +177,9 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
       case Constants.order:
         return new MaterialPageRoute(
           builder: (context) {
-            return Order();
+            return Order(
+              client: _valueNotifier.value,
+            );
           },
         );
         break;
