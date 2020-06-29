@@ -4,8 +4,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:duan_cntt2/src/API/query.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:date_format/date_format.dart';
-import 'package:intl/intl.dart';
 
 class Order extends StatefulWidget {
   Order({@required this.client});
@@ -103,7 +101,59 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             new Container(padding: EdgeInsets.all(10)),
-                            Container(child: Search()),
+                            Container(
+                                child: KeyboardDismisser(
+                              gestures: [
+                                GestureType.onTap,
+                                GestureType.onPanUpdateDownDirection,
+                                GestureType.onTapCancel,
+                              ],
+                              child: new Container(
+                                height: 80,
+                                width: MediaQuery.of(context).size.width / 1.3,
+                                margin: EdgeInsets.only(left: 10, right: 10),
+                                alignment: Alignment.center,
+                                decoration: new BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.15),
+                                      offset: Offset(0.8, 10.0),
+                                      blurRadius: 9.0,
+                                      spreadRadius: 2.0,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: TextField(
+                                  cursorColor: Colors.black,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  decoration: new InputDecoration(
+                                    prefixIcon: Icon(Icons.zoom_in),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, Constants.qrcamera);
+                                      },
+                                      icon: Icon(Icons.fullscreen),
+                                    ),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Bạn Muốn Tìm Mã Đơn hàng ?",
+                                    labelText: 'Nhập Để Tìm Kiếm Mã Đơn Hàng',
+                                  ),
+                                ),
+                              ),
+                            )),
                             new Container(padding: EdgeInsets.all(10)),
                             Container(
                               height: MediaQuery.of(context).size.width * 1.5,
@@ -130,7 +180,10 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                                         ],
                                       ),
                                       child: OutlineButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          print(result.data["order"]['orders']
+                                              [index]['customer_name']);
+                                        },
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -159,23 +212,104 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                                                 Container(
                                                   padding: EdgeInsets.all(5),
                                                 ),
-                                                Container(
-                                                  child: Text(
-                                                    'Đã hoàn thành',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Jura',
-                                                      fontSize: (14),
-                                                      color: const Color(
-                                                          0xff3b82b6),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    1)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đang tạo mới',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color: Colors
+                                                              .blueAccent),
                                                     ),
                                                   ),
-                                                ),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    4)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đã nhận được',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color:
+                                                              Colors.redAccent),
+                                                    ),
+                                                  ),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    2)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đã Xác Nhận',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color: Colors.orange),
+                                                    ),
+                                                  ),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    7)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đã Huỷ',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color: Colors
+                                                              .greenAccent),
+                                                    ),
+                                                  ),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    5)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đang Trả Hàng Về',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color:
+                                                              Colors.blueGrey),
+                                                    ),
+                                                  ),
+                                                if (result.data['order']
+                                                            ['orders'][index]
+                                                        ['status'] ==
+                                                    6)
+                                                  Container(
+                                                    child: Text(
+                                                      'Đã Trả Hàng Về',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontFamily: 'Jura',
+                                                          fontSize: (14),
+                                                          color: Colors.purple),
+                                                    ),
+                                                  ),
                                               ],
                                             ),
                                             Container(
-                                              padding:
-                                                  EdgeInsets.only(left: 30),
+                                              padding: EdgeInsets.only(left: 5),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -210,9 +344,9 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                                                                   [index]
                                                               ["customer_name"],
                                                       overflow:
-                                                          TextOverflow.ellipsis,
+                                                          TextOverflow.fade,
                                                       style: TextStyle(
-                                                          fontSize: 16,
+                                                          fontSize: 14,
                                                           fontWeight: FontWeight
                                                               .normal),
                                                     ),
@@ -249,63 +383,5 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                         ),
                       )));
             }));
-  }
-}
-
-class Search extends StatelessWidget {
-  const Search({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyboardDismisser(
-      gestures: [
-        GestureType.onTap,
-        GestureType.onPanUpdateDownDirection,
-        GestureType.onTapCancel,
-      ],
-      child: new Container(
-        height: 80,
-        width: MediaQuery.of(context).size.width / 1.3,
-        margin: EdgeInsets.only(left: 10, right: 10),
-        alignment: Alignment.center,
-        decoration: new BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              offset: Offset(0.8, 10.0),
-              blurRadius: 9.0,
-              spreadRadius: 2.0,
-            ),
-          ],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: TextField(
-          cursorColor: Colors.black,
-          keyboardType: TextInputType.text,
-          maxLines: 1,
-          decoration: new InputDecoration(
-            prefixIcon: Icon(Icons.zoom_in),
-            suffixIcon: IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, Constants.qrcamera);
-              },
-              icon: Icon(Icons.fullscreen),
-            ),
-            border: OutlineInputBorder(),
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            errorBorder: InputBorder.none,
-            disabledBorder: InputBorder.none,
-            contentPadding:
-                EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-            hintText: "Bạn Muốn Tìm Mã Đơn hàng ?",
-            labelText: 'Nhập Để Tìm Kiếm Mã Đơn Hàng',
-          ),
-        ),
-      ),
-    );
   }
 }
