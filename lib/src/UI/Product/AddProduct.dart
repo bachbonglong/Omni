@@ -31,7 +31,8 @@ class _AddProduct extends State<AddProduct> {
             ),
             title: Text(
               "Thêm Sản Phẩm",
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
             )),
         body: Container(
             decoration: BoxDecoration(
@@ -78,7 +79,10 @@ class _AddProduct extends State<AddProduct> {
                                     size: 80,
                                   ),
                                 ),
-                                Text("Thêm Ảnh Sản Phẩm" , style: TextStyle(fontWeight: FontWeight.w400),)
+                                Text(
+                                  "Thêm Ảnh Sản Phẩm",
+                                  style: TextStyle(fontWeight: FontWeight.w400),
+                                )
                               ],
                             ),
                           ),
@@ -95,13 +99,13 @@ class _AddProduct extends State<AddProduct> {
                         new Container(padding: EdgeInsets.only(top: 20)),
                         FromField6(),
                         new Container(padding: EdgeInsets.only(top: 20)),
-                        FromField7(),
+                        // FromField7(),
                         new Container(padding: EdgeInsets.only(top: 20)),
-                        FromField8(),
+                        // FromField8(),
                         new Container(padding: EdgeInsets.only(top: 20)),
-                        FromField9(),
+                        // FromField9(),
                         new Container(padding: EdgeInsets.only(top: 20)),
-                        ChoiceType(),
+                        // ChoiceType(),
                         new Container(padding: EdgeInsets.only(top: 20)),
                       ],
                     ),
@@ -564,11 +568,11 @@ class ChoiceType extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(),
         alignment: Alignment.centerLeft,
-        child: Container(child: Text("Chọn Loại Sản Phẩm", 
-        style: TextStyle(
-          fontSize: (20), 
-          fontWeight: FontWeight.w300),
-          )),
+        child: Container(
+            child: Text(
+          "Chọn Loại Sản Phẩm",
+          style: TextStyle(fontSize: (20), fontWeight: FontWeight.w300),
+        )),
       ),
     );
   }

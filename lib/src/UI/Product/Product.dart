@@ -28,6 +28,17 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
     'Quần Nữ'
   ];
   String _selectPhanloai;
+  int curentIndex;
+  // bool show = true;
+  // showDetail(index) {
+  //   setState(() {
+  //     if (curentIndex != index) {
+  //       show = !show;
+  //       print(curentIndex);
+  //       print(index);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -133,165 +144,113 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
           shrinkWrap: true,
           itemCount: result.data['product']['products'].length,
           itemBuilder: (BuildContext context, int index) {
-            return new Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    offset: Offset(0.8, 10.0),
-                    blurRadius: 9.0,
-                    spreadRadius: 2.0,
-                  ),
-                ],
-              ),
-              height: 150,
-              margin: EdgeInsets.only(top: 10, bottom: 10),
-              alignment: Alignment.center,
-              child: OutlineButton(
-                onPressed: () {},
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    if (result.data['product']['products'][index]
-                            ['featured_photo'] ==
-                        null)
-                      Container(
-                        height: 130,
-                        child: new Image.network(
-                            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/1280px-No_image_3x4.svg.png"),
-                      ),
-                    if (result.data['product']['products'][index]
-                            ['featured_photo'] !=
-                        null)
-                      Container(
-                        height: 130,
-                        child: new Image.network(result.data['product']
-                            ['products'][index]['featured_photo']['url']),
-                      ),
-                    new Expanded(child: Container()),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+            curentIndex = index;
+            return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      offset: Offset(0.8, 10.0),
+                      blurRadius: 9.0,
+                      spreadRadius: 2.0,
+                    ),
+                  ],
+                ),
+                height: 150,
+                margin: EdgeInsets.only(top: 10, bottom: 10),
+                alignment: Alignment.center,
+                child: OutlineButton(
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        new Text(
-                          (result.data['product']['products'][index]['name']),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xff716767),
-                          ),
-                        ),
                         if (result.data['product']['products'][index]
-                                ['sale_price'] ==
+                                ['featured_photo'] ==
                             null)
-                          new Text(
-                            (result.data['product']['products'][index]['price']
-                                    .toString() +
-                                " đ"),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xff716767),
+                          Container(
+                            height: 130,
+                            child: new Image.network(
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/No_image_3x4.svg/1280px-No_image_3x4.svg.png"),
+                          ),
+                        if (result.data['product']['products'][index]
+                                ['featured_photo'] !=
+                            null)
+                          Container(
+                            height: 130,
+                            child: new Image.network(result.data['product']
+                                ['products'][index]['featured_photo']['url']),
+                          ),
+                        new Expanded(child: Container()),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            new Text(
+                              (result.data['product']['products'][index]
+                                  ['name']),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xff716767),
+                              ),
                             ),
-                          ),
-                        if (result.data['product']['products'][index]
-                                ['sale_price'] !=
-                            null)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
+                            if (result.data['product']['products'][index]
+                                    ['sale_price'] ==
+                                null)
                               new Text(
                                 (result.data['product']['products'][index]
                                             ['price']
                                         .toString() +
                                     " đ"),
                                 style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w400,
                                   color: Color(0xff716767),
                                 ),
                               ),
-                              new Text(
-                                (result.data['product']['products'][index]
-                                            ['sale_price']
-                                        .toString() +
-                                    " đ"),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color(0xff716767),
-                                ),
-                              ),
-                            ],
-                          )
+                            if (result.data['product']['products'][index]
+                                    ['sale_price'] !=
+                                null)
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  new Text(
+                                    (result.data['product']['products'][index]
+                                                ['price']
+                                            .toString() +
+                                        " đ"),
+                                    style: TextStyle(
+                                      decoration: TextDecoration.lineThrough,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff716767),
+                                    ),
+                                  ),
+                                  new Text(
+                                    (result.data['product']['products'][index]
+                                                ['sale_price']
+                                            .toString() +
+                                        " đ"),
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xff716767),
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ],
+                        ),
+                        new Expanded(child: Container()),
+                        new Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.black26,
+                        )
                       ],
-                    ),
-                    new Expanded(child: Container()),
-                    new Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.black26,
-                    )
-                  ],
-                ),
-              ),
-            );
+                    )));
           }),
-    );
-  }
-}
-
-class ListProduct extends StatelessWidget {
-  const ListProduct({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            offset: Offset(0.8, 10.0),
-            blurRadius: 9.0,
-            spreadRadius: 2.0,
-          ),
-        ],
-      ),
-      height: 150,
-      margin: EdgeInsets.only(top: 10, bottom: 10),
-      alignment: Alignment.center,
-      child: OutlineButton(
-        onPressed: () {},
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              height: 130,
-              child: new Image.network(
-                  "https://product.hstatic.net/1000088324/product/2__2__128daeaf24aa421ab7f3868a1acbae6f_master.png"),
-            ),
-            new Expanded(child: Container()),
-            new Text(
-              "Áo TeenWorld",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff716767),
-              ),
-            ),
-            new Expanded(child: Container()),
-            new Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.black26,
-            )
-          ],
-        ),
-      ),
     );
   }
 }
