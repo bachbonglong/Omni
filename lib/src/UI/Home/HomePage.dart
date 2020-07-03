@@ -9,9 +9,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.client}) : super(key: key);
-  final GraphQLClient client;
-
+  HomePage({Key key, this.clientOrder, this.clientProduct, this.clientAuth})
+      : super(key: key);
+  final GraphQLClient clientOrder;
+  final GraphQLClient clientProduct;
+  final GraphQLClient clientAuth;
   @override
   State<StatefulWidget> createState() {
     return _HomePage();
@@ -34,13 +36,13 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Home(),
           Product(
-            client: widget.client,
+            client: widget.clientProduct,
           ),
           Order(
-            client: widget.client,
+            client: widget.clientOrder,
           ),
           WareHouse(),
-          More(),
+          More(client: widget.clientAuth),
         ],
       ),
       bottomNavigationBar: Container(

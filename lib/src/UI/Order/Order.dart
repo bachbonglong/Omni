@@ -72,17 +72,6 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
               if (result.loading) {
                 return Center(child: CircularProgressIndicator());
               }
-              if (result.data == null) {
-                print(result.data);
-
-                return Center(
-                  child: Column(
-                    children: <Widget>[
-                      Text("Không có Data"),
-                    ],
-                  ),
-                );
-              }
               return Container(
                   height: double.infinity,
                   decoration: BoxDecoration(
