@@ -3,36 +3,59 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:duan_cntt2/src/constants/constants.dart';
-// import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:http_parser/http_parser.dart';
 // import 'package:http/http.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:duan_cntt2/src/API/mutation.dart';
 
-class AddProduct extends StatefulWidget {
-  AddProduct({@required this.client});
+class UpdateProduct extends StatefulWidget {
+  UpdateProduct(
+      {Key key,
+      this.name,
+      this.decs,
+      this.price,
+      this.id,
+      this.weight,
+      this.image,
+      // this.tags,
+      // ignore: non_constant_identifier_names
+      this.sale_price,
+      // ignore: non_constant_identifier_names
+      this.in_price})
+      : super(key: key);
 
-  final GraphQLClient client;
+  final String name;
+  final String decs;
+  final String price;
+  // ignore: non_constant_identifier_names
+  final String sale_price;
+  // ignore: non_constant_identifier_names
+  final String in_price;
+  final String id;
+  // final String tags;
+  final String image;
+  final String weight;
+
   @override
-  _AddProduct createState() => _AddProduct();
+  _UpdateProduct createState() => _UpdateProduct();
 }
 
-class _AddProduct extends State<AddProduct> {
+class _UpdateProduct extends State<UpdateProduct> {
   final TextEditingController _nameSamPham = TextEditingController();
   final TextEditingController _moTaSanPham = TextEditingController();
   final TextEditingController _giaBanLe = TextEditingController();
   final TextEditingController _giaGiam = TextEditingController();
   final TextEditingController _giaNhap = TextEditingController();
-  final TextEditingController _anhSanPham = TextEditingController();
-  final TextEditingController _weightSanPham = TextEditingController();
-  final TextEditingController _tagSanPham = TextEditingController();
+  final TextEditingController _urlSanpham = TextEditingController();
 
   @override
   void initState() {
     super.initState();
   }
+
+  // ignore: unused_field
+  bool _uploadInProgress = false;
 
   // ignore: unused_field
   File _image;
@@ -107,18 +130,19 @@ class _AddProduct extends State<AddProduct> {
                     ),
                     child: Mutation(
                       options: MutationOptions(
-                        documentNode: gql(addProduct),
+                        documentNode: gql(updatProduct),
                         update: (Cache cache, QueryResult result) {
-                          print("DA UPDATE SAN PHAM");
+                          print("DA NHAP THANH CONG");
                           return cache;
                         },
                         onError: (error) => print(error),
                         onCompleted: (dynamic resultdata) {
-                          print("DA NHAP THANH CONG");
+                          print("DA UPDATE THÀNH CÔNG");
                           Navigator.pop(context);
                         },
                       ),
-                      builder: (RunMutation insert, QueryResult result) {
+                      builder: (RunMutation updateProduct,
+                          QueryResult resultUpdate) {
                         return Form(
                           key: _formKey,
                           autovalidate: _validate,
@@ -167,9 +191,8 @@ class _AddProduct extends State<AddProduct> {
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Nhập Tên Sản Phẩm',
-                                    hintText:
-                                        "Hãy Nhập Tên Sản Phẩm Bạn Muốn Thêm Vào",
+                                    labelText: widget.name,
+                                    hintText: "Hãy Sửa Tên Sản Phẩm",
                                   ),
                                 ),
                               ),
@@ -194,60 +217,8 @@ class _AddProduct extends State<AddProduct> {
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Mô Tả Sản Phẩm',
-                                    hintText: "Mô Tả Chi Tiết Cho Sản Phẩm",
-                                  ),
-                                ),
-                              ),
-                              new Container(padding: EdgeInsets.only(top: 20)),
-                              Container(
-                                height: 80,
-                                margin: EdgeInsets.only(left: 10, right: 10),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade400),
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: TextField(
-                                  controller: _tagSanPham,
-                                  cursorColor: Colors.black,
-                                  keyboardType: TextInputType.text,
-                                  decoration: new InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    labelText: 'Loại Sản Phẩm',
-                                    hintText: "Nhập Loại Sản Phẩm",
-                                  ),
-                                ),
-                              ),
-                              new Container(padding: EdgeInsets.only(top: 20)),
-                              Container(
-                                height: 80,
-                                margin: EdgeInsets.only(left: 10, right: 10),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom:
-                                        BorderSide(color: Colors.grey.shade400),
-                                  ),
-                                ),
-                                alignment: Alignment.center,
-                                child: TextField(
-                                  controller: _weightSanPham,
-                                  cursorColor: Colors.black,
-                                  keyboardType: TextInputType.text,
-                                  decoration: new InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    labelText: 'Trọng Lượng Sản Phẩm',
-                                    hintText: "Nhập Trọng Lượng Cho Sản Phẩm",
+                                    labelText: widget.decs,
+                                    hintText: "Hãy Sửa Mô Tả Sản Phẩm",
                                   ),
                                 ),
                               ),
@@ -273,8 +244,8 @@ class _AddProduct extends State<AddProduct> {
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Giá Bán Lẻ',
-                                    hintText: "Nhập Giá Bán Lẻ Sản Phẩm",
+                                    labelText: widget.price,
+                                    hintText: "Hãy Sửa Giá Bán Lẻ Sản Phẩm",
                                   ),
                                 ),
                               ),
@@ -300,8 +271,8 @@ class _AddProduct extends State<AddProduct> {
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Giá Giảm ( Nếu Có )',
-                                    hintText: "Nhập Giá Giảm Cho Sản Phẩm",
+                                    labelText: widget.sale_price,
+                                    hintText: "Hãy Sửa Giá Giảm Sản Phẩm",
                                   ),
                                 ),
                               ),
@@ -327,14 +298,12 @@ class _AddProduct extends State<AddProduct> {
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Giá Nhập',
-                                    hintText: "Nhập Giá Nhập Cho Sản Phẩm",
+                                    labelText: widget.in_price,
+                                    hintText: "Hãy Sửa Giá Nhập Sản Phẩm",
                                   ),
                                 ),
                               ),
-                              new Container(
-                                padding: EdgeInsets.only(top: 20),
-                              ),
+                              new Container(padding: EdgeInsets.only(top: 20)),
                               Container(
                                 height: 80,
                                 margin: EdgeInsets.only(left: 10, right: 10),
@@ -346,20 +315,22 @@ class _AddProduct extends State<AddProduct> {
                                 ),
                                 alignment: Alignment.center,
                                 child: TextField(
-                                  controller: _anhSanPham,
+                                  controller: _urlSanpham,
                                   cursorColor: Colors.black,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.url,
                                   decoration: new InputDecoration(
-                                    suffixIcon: Icon(Icons.image),
                                     border: OutlineInputBorder(),
                                     focusedBorder: InputBorder.none,
                                     enabledBorder: InputBorder.none,
                                     errorBorder: InputBorder.none,
                                     disabledBorder: InputBorder.none,
-                                    labelText: 'Thêm URL ảnh',
-                                    hintText: "Nhập url ảnh Cho Sản Phẩm",
+                                    labelText: widget.image,
+                                    hintText: "Sửa lại đường link",
                                   ),
                                 ),
+                              ),
+                              new Container(
+                                padding: EdgeInsets.only(top: 20),
                               ),
                               new Container(padding: EdgeInsets.only(top: 20)),
                               Center(
@@ -369,21 +340,16 @@ class _AddProduct extends State<AddProduct> {
                                   height: 50.0,
                                   child: GestureDetector(
                                     onTap: () {
-                                      Map<String, dynamic> pr = {
+                                      updateProduct(<String, dynamic>{
+                                        'id': widget.id,
                                         'name': _nameSamPham.text,
                                         'price': double.parse(_giaBanLe.text),
                                         'desc': _moTaSanPham.text,
                                         'sale_price':
                                             double.parse(_giaGiam.text),
-                                        'in_price': double.parse(
-                                          _giaNhap.text,
-                                        ),
-                                        // 'photo_urls': _anhSanPham.text,
-                                        'weight':
-                                            double.parse(_weightSanPham.text),
-                                      };
-
-                                      insert(pr);
+                                        'in_price': double.parse(_giaNhap.text),
+                                        'photo_urls':[_urlSanpham.text],
+                                      });
                                     },
                                     child: Container(
                                       width: (136),

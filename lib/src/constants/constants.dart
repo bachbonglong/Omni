@@ -6,6 +6,7 @@ class Constants {
   static const String report = "/report";
   static const String home = "/home";
   static const String addproduct = "/addproduct";
+  static const String updateproduct = "/updateproduct";
   static const String product = "/product";
   static const String typeproduct = "/typeproduct";
   static const String addproducthad = "/addproducthad";
@@ -34,7 +35,6 @@ class Constants {
   static const String statewarehouseDuyet = "/statewarehouseDuyet";
   static const String statewarehouseNhapKho = "/statewarehouseNhapKho";
   static const String paymentwarehouse = "/paymentwarehouse";
-    static const String statewarehouseHoanThanh = "/statewarehouseHoanThanh";
-
-  
+  static const String statewarehouseHoanThanh = "/statewarehouseHoanThanh";
+  static const String signup = "/signup";
 }

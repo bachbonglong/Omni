@@ -30,6 +30,7 @@ import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseDuyet.dart';
 import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseHoanThanh.dart';
 import 'package:duan_cntt2/src/UI/WareHouse/statewarehouseNhapKho.dart';
 import 'package:duan_cntt2/src/UI/login/login.dart';
+import 'package:duan_cntt2/src/UI/login/signup.dart';
 import 'package:duan_cntt2/src/utils/widget/scanQR.dart';
 import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/constants/constants.dart';
@@ -50,12 +51,36 @@ class GraphQLConfig extends StatefulWidget {
 class _GrahpQLConfigState extends State<GraphQLConfig> {
   final storage = new FlutterSecureStorage();
   ValueNotifier<GraphQLClient> _valueNotifier;
+  ValueNotifier<GraphQLClient> _productClient;
+  ValueNotifier<GraphQLClient> _orderClient;
+  ValueNotifier<GraphQLClient> _pictureClient;
+  ValueNotifier<GraphQLClient> _locationClient;
+  ValueNotifier<GraphQLClient> _wareclient;
 
   @override
   void initState() {
-    initClient().then((value) {
+    authClient().then((value) {
       _valueNotifier = ValueNotifier<GraphQLClient>(value);
-
+      setState(() {});
+    });
+    productClient().then((value) {
+      _productClient = ValueNotifier<GraphQLClient>(value);
+      setState(() {});
+    });
+    orderClient().then((value) {
+      _orderClient = ValueNotifier<GraphQLClient>(value);
+      setState(() {});
+    });
+    pictureClient().then((value) {
+      _locationClient = ValueNotifier<GraphQLClient>(value);
+      setState(() {});
+    });
+    locationClient().then((value) {
+      _locationClient = ValueNotifier<GraphQLClient>(value);
+      setState(() {});
+    });
+    wareClient().then((value) {
+      _wareclient = ValueNotifier<GraphQLClient>(value);
       setState(() {});
     });
     super.initState();
@@ -86,7 +111,10 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
                       if (!snapshot.hasData) {
                         return Login(client: _valueNotifier);
                       }
-                      return HomePage(client: _valueNotifier.value);
+                      return HomePage(
+                          clientOrder: _orderClient.value,
+                          clientProduct: _productClient.value,
+                          clientAuth : _valueNotifier.value);
                       break;
                   }
                   return Container();
@@ -116,6 +144,13 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
           },
         );
         break;
+      case Constants.signup:
+        return new MaterialPageRoute(
+          builder: (context) {
+            return Signup(client: _valueNotifier);
+          },
+        );
+        break;
       case Constants.homepage:
         return new MaterialPageRoute(
           builder: (context) {
@@ -133,7 +168,14 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
       case Constants.addproduct:
         return new MaterialPageRoute(
           builder: (context) {
-            return AddProduct();
+            return AddProduct(client: _productClient.value);
+          },
+        );
+        break;
+      case Constants.updateproduct:
+        return new MaterialPageRoute(
+          builder: (context) {
+            return AddProduct(client: _productClient.value);
           },
         );
         break;
@@ -361,10 +403,56 @@ class _GrahpQLConfigState extends State<GraphQLConfig> {
   }
 }
 
-Future<GraphQLClient> initClient() async {
+Future<GraphQLClient> authClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+
+  HttpLink link = HttpLink(
+      uri: "https://auth-service.bluebird.vn/graphql",
+      headers: {"access_token": token});
+
+  return GraphQLClient(link: link, cache: InMemoryCache());
+}
+
+Future<GraphQLClient> productClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+  final HttpLink link = HttpLink(
+      uri: "https://product-service.bluebird.vn/graphql",
+      headers: {"access_token": token});
+
+  return GraphQLClient(link: link, cache: InMemoryCache());
+}
+
+Future<GraphQLClient> orderClient() async {
   String token = await FlutterSecureStorage().read(key: "jwt");
   HttpLink link = HttpLink(
-      uri: "https://api-dev.azsales.vn/graphql",
+      uri: "https://order-service.bluebird.vn/graphql",
+      headers: {"access_token": token});
+
+  return GraphQLClient(link: link, cache: InMemoryCache());
+}
+
+Future<GraphQLClient> pictureClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+  HttpLink link = HttpLink(
+      uri: "https://filestore-service.bluebird.vn/graphq",
+      headers: {"access_token": token});
+
+  return GraphQLClient(link: link, cache: InMemoryCache());
+}
+
+Future<GraphQLClient> locationClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+  HttpLink link = HttpLink(
+      uri: "https://location-service.bluebird.vn/graphql",
+      headers: {"access_token": token});
+
+  return GraphQLClient(link: link, cache: InMemoryCache());
+}
+
+Future<GraphQLClient> wareClient() async {
+  String token = await FlutterSecureStorage().read(key: "jwt");
+  HttpLink link = HttpLink(
+      uri: "https://inventory-service.bluebird.vn/graphql",
       headers: {"access_token": token});
 
   return GraphQLClient(link: link, cache: InMemoryCache());

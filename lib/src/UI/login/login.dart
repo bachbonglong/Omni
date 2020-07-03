@@ -1,4 +1,5 @@
 import 'package:duan_cntt2/main.dart';
+import 'package:duan_cntt2/src/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:duan_cntt2/src/API/token.dart';
 
@@ -151,7 +152,7 @@ class _LoginState extends State<Login> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Login",
+                                  Text("Đăng Nhập",
                                       style: TextStyle(
                                           fontSize: ScreenUtil.getInstance()
                                               .setSp(45),
@@ -161,7 +162,7 @@ class _LoginState extends State<Login> {
                                     height:
                                         ScreenUtil.getInstance().setHeight(30),
                                   ),
-                                  Text("Username",
+                                  Text("Tài Khoản",
                                       style: TextStyle(
                                           fontFamily: "Poppins-Medium",
                                           fontSize: ScreenUtil.getInstance()
@@ -179,7 +180,7 @@ class _LoginState extends State<Login> {
                                     height:
                                         ScreenUtil.getInstance().setHeight(30),
                                   ),
-                                  Text("PassWord",
+                                  Text("Mật Khẩu",
                                       style: TextStyle(
                                           fontFamily: "Poppins-Medium",
                                           fontSize: ScreenUtil.getInstance()
@@ -247,12 +248,8 @@ class _LoginState extends State<Login> {
                                     } else {
                                       var jwt = result.data['auth']['login']
                                           ['accessToken'];
-
-                                      //                                       var jwt = 'Bearer' + result.data['auth']['login']
-                                      // ['accessToken'];
-
                                       storage.write(key: "jwt", value: jwt);
-                                      final client = await initClient();
+                                      final client = await authClient();
                                       widget.client.value = client;
                                       print(jwt);
                                       Navigator.push(
@@ -279,57 +276,19 @@ class _LoginState extends State<Login> {
                       SizedBox(
                         height: ScreenUtil.getInstance().setHeight(40),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          horizontalLine(),
-                          Text("Social Login",
+                      Container(
+                        child: FlatButton(
+                            onPressed: () => {
+                                  Navigator.pushNamed(context, Constants.signup)
+                                },
+                            child: Text(
+                              "Bạn chưa có tài khoản ? Đăng kí nhanh!",
                               style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontFamily: "Poppins-Medium")),
-                          horizontalLine()
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil.getInstance().setHeight(40),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SocialIcon(
-                            colors: [
-                              Color(0xFF102397),
-                              Color(0xFF187adf),
-                              Color(0xFF00eaf8),
-                            ],
-                            iconData: CustomIcons.facebook,
-                            onPressed: () {},
-                          ),
-                          SocialIcon(
-                            colors: [
-                              Color(0xFFff4f38),
-                              Color(0xFFff355d),
-                            ],
-                            iconData: CustomIcons.googlePlus,
-                            onPressed: () {},
-                          ),
-                          SocialIcon(
-                            colors: [
-                              Color(0xFF17ead9),
-                              Color(0xFF6078ea),
-                            ],
-                            iconData: CustomIcons.twitter,
-                            onPressed: () {},
-                          ),
-                          SocialIcon(
-                            colors: [
-                              Color(0xFF00c6fb),
-                              Color(0xFF005bea),
-                            ],
-                            iconData: CustomIcons.linkedin,
-                            onPressed: () {},
-                          )
-                        ],
+                                decoration: TextDecoration.underline,
+                                fontSize: 16,
+                                color: Colors.blueAccent,
+                              ),
+                            )),
                       ),
                       SizedBox(
                         height: ScreenUtil.getInstance().setHeight(30),
@@ -349,32 +308,5 @@ class _LoginState extends State<Login> {
     // flutter defined function
     warningDialog(context, "Bạn đã đăng nhập sai tài khoản \nhoặc  mật khẩu",
         positiveAction: () {});
-  }
-}
-
-class SocialIcon extends StatelessWidget {
-  final List<Color> colors;
-  final IconData iconData;
-  final Function onPressed;
-
-  SocialIcon({this.colors, this.iconData, this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return new Padding(
-      padding: EdgeInsets.only(left: 14.0),
-      child: Container(
-        width: 45.0,
-        height: 45.0,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(colors: colors, tileMode: TileMode.clamp)),
-        child: RawMaterialButton(
-          shape: CircleBorder(),
-          onPressed: onPressed,
-          child: Icon(iconData, color: Colors.white),
-        ),
-      ),
-    );
   }
 }
