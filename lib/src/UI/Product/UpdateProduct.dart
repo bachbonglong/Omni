@@ -48,7 +48,7 @@ class _UpdateProduct extends State<UpdateProduct> {
   final TextEditingController _giaGiam = TextEditingController();
   final TextEditingController _giaNhap = TextEditingController();
   final TextEditingController _urlSanpham = TextEditingController();
-
+  final TextEditingController _weight = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -288,6 +288,33 @@ class _UpdateProduct extends State<UpdateProduct> {
                                 ),
                                 alignment: Alignment.center,
                                 child: TextField(
+                                  controller: _weight,
+                                  cursorColor: Colors.black,
+                                  keyboardType: TextInputType.text,
+                                  decoration: new InputDecoration(
+                                    suffixIcon: Icon(Icons.wb_auto),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    labelText: widget.weight + " kg",
+                                    hintText: "Hãy Sửa Cân Nặng Sản Phẩm",
+                                  ),
+                                ),
+                              ),
+                              new Container(padding: EdgeInsets.only(top: 20)),
+                              Container(
+                                height: 80,
+                                margin: EdgeInsets.only(left: 10, right: 10),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom:
+                                        BorderSide(color: Colors.grey.shade400),
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: TextField(
                                   controller: _giaNhap,
                                   cursorColor: Colors.black,
                                   keyboardType: TextInputType.number,
@@ -348,7 +375,8 @@ class _UpdateProduct extends State<UpdateProduct> {
                                         'sale_price':
                                             double.parse(_giaGiam.text),
                                         'in_price': double.parse(_giaNhap.text),
-                                        'photo_urls':[_urlSanpham.text],
+                                        'weight': double.parse(_weight.text)
+                                        // 'photo_urls':[_urlSanpham.text],
                                       });
                                     },
                                     child: Container(

@@ -172,7 +172,7 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
                             selectPhanloai: _selectPhanloai,
                             phanloai: _phanloai),
                         new Container(padding: EdgeInsets.all(10)),
-                        listViewProduct(context, result, _controller),
+                        listViewProduct(context, result),
                       ],
                     ),
                   ),
@@ -183,8 +183,7 @@ class _Product extends State<Product> with SingleTickerProviderStateMixin {
     );
   }
 
-  Container listViewProduct(
-      BuildContext context, QueryResult result, _controller) {
+  Container listViewProduct(BuildContext context, QueryResult result) {
     return Container(
       child: new ListView.builder(
         physics: const NeverScrollableScrollPhysics(),

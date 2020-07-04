@@ -82,7 +82,12 @@ class _Assignment extends State<Order> with SingleTickerProviderStateMixin {
                   ),
                   child: RefreshIndicator(
                       onRefresh: () async {
-                        await new Future.delayed(const Duration(seconds: 2));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    super.widget));
+                        await Future.value({});
                       },
                       child: SingleChildScrollView(
                         child: Column(

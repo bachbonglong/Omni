@@ -134,12 +134,12 @@ class Search extends StatelessWidget {
           maxLines: 1,
           decoration: new InputDecoration(
             prefixIcon: Icon(Icons.zoom_in),
-                      suffixIcon: IconButton(
-      onPressed: (){
-       Navigator.pushNamed(context,Constants.qrcamera);
-},
-      icon: Icon(Icons.fullscreen),
-    ),
+            suffixIcon: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Constants.qrcamera);
+              },
+              icon: Icon(Icons.fullscreen),
+            ),
             border: OutlineInputBorder(),
             focusedBorder: InputBorder.none,
             enabledBorder: InputBorder.none,
@@ -191,7 +191,7 @@ class _ListOrderState extends State<ListOrder> {
       ),
       child: OutlineButton(
         textColor: choose ? Colors.black : Colors.blue,
-        onPressed: tap, 
+        onPressed: tap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[

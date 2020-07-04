@@ -98,11 +98,9 @@ class _SignUp extends State<Signup> {
           onError: (error) => print(error),
           onCompleted: (dynamic resultdata) {
             {
-              // flutter defined function
-              warningDialog(
-                  context, "Bạn đã đăng kí thành công. Đăng nhập ngay nào",
-                  positiveAction: () {});
-              Navigator.pushNamed(context, Constants.login);
+            
+              /// Sau khi đăng kí xong sẽ đăng nhập luôn
+
             }
           },
           documentNode: gql(signupaccount),

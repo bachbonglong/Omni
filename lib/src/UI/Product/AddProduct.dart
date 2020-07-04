@@ -378,11 +378,9 @@ class _AddProduct extends State<AddProduct> {
                                         'in_price': double.parse(
                                           _giaNhap.text,
                                         ),
-                                        // 'photo_urls': _anhSanPham.text,
                                         'weight':
                                             double.parse(_weightSanPham.text),
                                       };
-
                                       insert(pr);
                                     },
                                     child: Container(

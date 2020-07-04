@@ -67,3 +67,20 @@ query{
   }
 }
 ''';
+
+const String sponsor = '''
+ query {
+  stock {
+    stocks {
+      name
+      address
+      city_code
+      district_code
+      ward_code
+      phone_number
+    }
+  }
+}
+
+
+''';
